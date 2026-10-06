@@ -18,3 +18,5 @@ nginx/certs/*.key
 
 # Docker data
 mysql_data/
+# MySQL exporter credentials
+mysql/exporter.my.cnf

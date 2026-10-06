@@ -92,9 +92,10 @@ services:
       - "3001:3000"
     environment:
       GF_SECURITY_ADMIN_USER: admin
-      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD}
     volumes:
       - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
     networks:
       - frontend-net
 
@@ -124,6 +125,46 @@ services:
     depends_on:
       - loki
       - nginx
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    container_name: news-cadvisor
+    restart: unless-stopped
+    volumes:
+      - /:/rootfs:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /run/containerd/containerd.sock:/run/containerd/containerd.sock:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    networks:
+      - frontend-net
+
+  nginx-exporter:
+    image: nginx/nginx-prometheus-exporter:1.3.0
+    container_name: news-nginx-exporter
+    restart: unless-stopped
+    command:
+      - -nginx.scrape-uri=http://nginx:8080/stub_status
+    networks:
+      - frontend-net
+    depends_on:
+      - nginx
+
+  mysqld-exporter:
+    image: prom/mysqld-exporter:v0.15.1
+    container_name: news-mysqld-exporter
+    restart: unless-stopped
+    command:
+      - --config.my-cnf=/cfg/.my.cnf
+      - --mysqld.address=mysql:3306
+    volumes:
+      - ./mysql/exporter.my.cnf:/cfg/.my.cnf:ro
+    networks:
+      - frontend-net
+      - backend-net
+    depends_on:
+      mysql:
+        condition: service_healthy
 
 networks:
   frontend-net:
