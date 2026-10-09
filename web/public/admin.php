@@ -52,37 +52,69 @@ $categories = $loggedIn ? $pdo->query('SELECT id, name FROM categories ORDER BY 
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Admin - News Portal</title>
+    <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-<h1>Quản trị News Portal</h1>
 
-<?php if ($error): ?><p style="color:red"><?= htmlspecialchars($error) ?></p><?php endif; ?>
-<?php if ($message): ?><p style="color:green"><?= htmlspecialchars($message) ?></p><?php endif; ?>
+<header class="site-header">
+    <div class="container">
+        <a class="brand" href="/">News <span>Portal</span></a>
+        <nav class="nav">
+            <a href="/">Trang chủ</a>
+            <a href="/admin.php">Quản trị</a>
+        </nav>
+    </div>
+</header>
 
-<?php if (!$loggedIn): ?>
-    <h2>Đăng nhập</h2>
-    <form method="post">
-        <p><input name="username" placeholder="Tài khoản" required></p>
-        <p><input name="password" type="password" placeholder="Mật khẩu" required></p>
-        <p><button name="login" value="1">Đăng nhập</button></p>
-    </form>
-<?php else: ?>
-    <p><a href="/">Xem trang chủ</a> | <a href="/admin.php?logout=1">Đăng xuất</a></p>
-    <h2>Đăng bài viết mới</h2>
-    <form method="post">
-        <input type="hidden" name="csrf" value="<?= htmlspecialchars($_SESSION['csrf']) ?>">
-        <p><input name="title" placeholder="Tiêu đề" size="60" required></p>
-        <p>
-            <select name="category_id" required>
-                <?php foreach ($categories as $c): ?>
-                    <option value="<?= (int) $c['id'] ?>"><?= htmlspecialchars($c['name']) ?></option>
-                <?php endforeach; ?>
-            </select>
-        </p>
-        <p><textarea name="content" rows="8" cols="60" placeholder="Nội dung" required></textarea></p>
-        <p><button name="add_post" value="1">Đăng bài</button></p>
-    </form>
-<?php endif; ?>
+<main class="container">
+    <div class="form-card">
+        <h1 class="page-title">Quản trị News Portal</h1>
+
+        <?php if ($error): ?><div class="alert alert-error"><?= htmlspecialchars($error) ?></div><?php endif; ?>
+        <?php if ($message): ?><div class="alert alert-ok"><?= htmlspecialchars($message) ?></div><?php endif; ?>
+
+        <?php if (!$loggedIn): ?>
+            <div class="card">
+                <h2>Đăng nhập</h2>
+                <form method="post">
+                    <label for="username">Tài khoản</label>
+                    <input id="username" type="text" name="username" required>
+                    <label for="password">Mật khẩu</label>
+                    <input id="password" type="password" name="password" required>
+                    <button class="btn" name="login" value="1">Đăng nhập</button>
+                </form>
+            </div>
+        <?php else: ?>
+            <div class="admin-bar">
+                <a href="/">Xem trang chủ</a>
+                <a href="/admin.php?logout=1">Đăng xuất</a>
+            </div>
+            <div class="card">
+                <h2>Đăng bài viết mới</h2>
+                <form method="post">
+                    <input type="hidden" name="csrf" value="<?= htmlspecialchars($_SESSION['csrf']) ?>">
+                    <label for="title">Tiêu đề</label>
+                    <input id="title" type="text" name="title" required>
+                    <label for="category_id">Chuyên mục</label>
+                    <select id="category_id" name="category_id" required>
+                        <?php foreach ($categories as $c): ?>
+                            <option value="<?= (int) $c['id'] ?>"><?= htmlspecialchars($c['name']) ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                    <label for="content">Nội dung</label>
+                    <textarea id="content" name="content" required></textarea>
+                    <button class="btn" name="add_post" value="1">Đăng bài</button>
+                </form>
+            </div>
+        <?php endif; ?>
+    </div>
+</main>
+
+<footer class="site-footer">
+    News Portal &middot; Đề 19 - Triển khai và Quản trị Hệ thống Phần mềm
+</footer>
+
 </body>
 </html>

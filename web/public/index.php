@@ -15,41 +15,51 @@ $stmt = $pdo->query("
 
 $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
-
 <!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>News Portal</title>
+    <link rel="stylesheet" href="/style.css">
 </head>
 <body>
 
-<h1>News Portal</h1>
+<header class="site-header">
+    <div class="container">
+        <a class="brand" href="/">News <span>Portal</span></a>
+        <nav class="nav">
+            <a href="/">Trang chủ</a>
+            <a href="/admin.php">Quản trị</a>
+        </nav>
+    </div>
+</header>
 
-<?php if (empty($posts)): ?>
+<main class="container">
+    <h1 class="page-title">Tin mới nhất</h1>
 
-    <p>Chưa có bài viết nào.</p>
+    <?php if (empty($posts)): ?>
 
-<?php else: ?>
+        <div class="card empty">Chưa có bài viết nào.</div>
 
-    <?php foreach ($posts as $post): ?>
+    <?php else: ?>
 
-        <article>
-            <h2><?= htmlspecialchars($post['title']) ?></h2>
+        <?php foreach ($posts as $post): ?>
 
-            <p>
-                <strong>Chuyên mục:</strong>
-                <?= htmlspecialchars($post['category_name']) ?>
-            </p>
+            <article class="card">
+                <span class="badge"><?= htmlspecialchars($post['category_name']) ?></span>
+                <h2><?= htmlspecialchars($post['title']) ?></h2>
+                <p><?= nl2br(htmlspecialchars($post['content'])) ?></p>
+            </article>
 
-            <p><?= htmlspecialchars($post['content']) ?></p>
-        </article>
+        <?php endforeach; ?>
 
-        <hr>
+    <?php endif; ?>
+</main>
 
-    <?php endforeach; ?>
-
-<?php endif; ?>
+<footer class="site-footer">
+    News Portal &middot; Đề 19 - Triển khai và Quản trị Hệ thống Phần mềm
+</footer>
 
 </body>
 </html>

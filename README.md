@@ -102,3 +102,4 @@ Nginx ghi log ra `/var/log/nginx-app/` (volume dùng chung), Promtail đọc và
 3. Thêm Loki, Promtail và truy vấn LogQL qua Grafana
 4. Hardening hệ thống
 5. Thêm setup.sh và cập nhật README
+6. Cải thiện giao diện website (CSS dùng chung cho trang chủ và trang admin)
