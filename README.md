@@ -52,6 +52,12 @@ Các dịch vụ quản trị chỉ mở cho máy chạy Docker (`127.0.0.1`). C
 
 Kết quả đúng: các container `Up`, response có security headers, 4 target Prometheus `up`.
 
+## Chức năng website
+
+- Trang chủ: danh sách bài viết kèm chuyên mục, ngày đăng và đoạn trích; có nút lọc theo chuyên mục (`/?cat=...`).
+- Trang chi tiết bài viết (`/article.php?id=...`), có danh sách bài cùng chuyên mục.
+- Trang admin (`/admin.php`): đăng nhập, đăng bài, chọn chuyên mục có sẵn hoặc tạo chuyên mục mới.
+
 ## Giám sát (Prometheus + Grafana)
 
 Prometheus thu thập số liệu từ 4 nguồn: `prometheus`, `cadvisor`, `nginx` (qua nginx-exporter) và `mysql` (qua mysqld-exporter). Grafana tự kết nối Prometheus và Loki nhờ file `grafana/provisioning/datasources/datasources.yml`.
@@ -103,3 +109,4 @@ Nginx ghi log ra `/var/log/nginx-app/` (volume dùng chung), Promtail đọc và
 4. Hardening hệ thống
 5. Thêm setup.sh và cập nhật README
 6. Cải thiện giao diện website (CSS dùng chung cho trang chủ và trang admin)
+7. Thêm trang chi tiết bài viết, lọc theo chuyên mục và tạo chuyên mục mới trong trang admin
