@@ -29,7 +29,7 @@ Hai mạng Docker: `frontend-net` (Nginx, web, các công cụ giám sát) và `
 
 `setup.sh` tự tạo các file bí mật không nằm trong repo (`.env` với mật khẩu ngẫu nhiên, chứng chỉ HTTPS tự ký, `mysql/exporter.my.cnf`), khởi động toàn bộ dịch vụ và thu hẹp quyền database. Chạy lại nhiều lần vẫn an toàn, file nào đã có thì được giữ nguyên.
 
-Lần chạy đầu, `setup.sh` in ra tài khoản admin của website và mật khẩu Grafana. Các mật khẩu này cũng nằm trong file `.env`. Grafana và Loki khởi động chậm, có thể cần 1 đến 3 phút.
+Lần chạy đầu, `setup.sh` in ra tài khoản admin của website và mật khẩu Grafana. Các mật khẩu này cũng nằm trong file `.env`. Lần chạy đầu cần tải image và khởi tạo MySQL nên có thể mất 5 đến 7 phút; Grafana và Loki khởi động chậm, có thể cần thêm 1 đến 3 phút. Nếu `setup.sh` báo chưa đăng nhập được MySQL thì đợi vài phút rồi chạy lại (script an toàn khi chạy lại).
 
 ## Địa chỉ truy cập
 
@@ -110,3 +110,4 @@ Nginx ghi log ra `/var/log/nginx-app/` (volume dùng chung), Promtail đọc và
 5. Thêm setup.sh và cập nhật README
 6. Cải thiện giao diện website (CSS dùng chung cho trang chủ và trang admin)
 7. Thêm trang chi tiết bài viết, lọc theo chuyên mục và tạo chuyên mục mới trong trang admin
+8. Sửa lỗi lần chạy đầu: healthcheck MySQL đúng cách, setup.sh chờ MySQL sẵn sàng và kiểm tra lại phân quyền

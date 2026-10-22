@@ -71,6 +71,21 @@ for i in $(seq 1 60); do
   sleep 5
 done
 
+# Cho den khi dang nhap duoc bang tai khoan root (MySQL lan dau khoi tao rat cham)
+READY=0
+for i in $(seq 1 60); do
+  if docker compose exec -T mysql sh -c 'mysql -uroot -p"$MYSQL_ROOT_PASSWORD" -e "SELECT 1"' > /dev/null 2>&1; then
+    READY=1
+    break
+  fi
+  sleep 5
+done
+if [ "$READY" != "1" ]; then
+  echo "LOI: chua dang nhap duoc MySQL bang root nen chua thu hep quyen."
+  echo "Hay doi vai phut roi chay lai ./setup.sh (script an toan khi chay lai)."
+  exit 1
+fi
+
 DBU=$(get MYSQL_USER)
 DBN=$(get MYSQL_DATABASE)
 DBE=$(echo "$DBN" | sed 's/_/\\_/g')
@@ -84,6 +99,13 @@ REVOKE ALL PRIVILEGES ON \`${DBE}\`.* FROM '${DBU}'@'%';
 GRANT SELECT, INSERT ON \`${DBE}\`.* TO '${DBU}'@'%';
 FLUSH PRIVILEGES;
 SQLEOF
+
+# Kiem tra lai ket qua thay vi tin la thanh cong
+CHECK=$(docker compose exec -T mysql sh -c 'mysql -uroot -p"$MYSQL_ROOT_PASSWORD" -N -e "SELECT COUNT(*) FROM mysql.user WHERE user=\"exporter\";"' 2>/dev/null | tr -d '[:space:]' || true)
+if [ "$CHECK" != "1" ]; then
+  echo "CANH BAO: chua tao duoc tai khoan exporter. Hay chay lai ./setup.sh."
+  exit 1
+fi
 
 docker compose restart mysqld-exporter > /dev/null
 
